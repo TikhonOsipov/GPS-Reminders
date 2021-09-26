@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="reminderDividerHeight">0.5dp</dimen>
+    <dimen name="reminderTitleVerticalMargin">24dp</dimen>
+    <dimen name="reminderRadioButtonMarginStart">8dp</dimen>
+</resources>
