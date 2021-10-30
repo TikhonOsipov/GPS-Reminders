@@ -1,4 +1,4 @@
-package com.tixon.reminders.screen_reminders_iist.adapter
+package com.tixon.reminders.screen_reminders_list.adapter
 
 import android.view.View
 import android.view.ViewGroup

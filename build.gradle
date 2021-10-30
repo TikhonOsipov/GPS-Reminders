@@ -13,6 +13,7 @@ buildscript {
         rxbinding_version = '2.1.1'
         rxbinding3_version = '3.1.0'
         mvicore = '1.2.6'
+        OSM = '6.1.10'
     }
 
     repositories {
@@ -23,6 +24,7 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:7.0.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.0"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
