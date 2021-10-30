@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tixon.reminders.R
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -19,6 +20,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.tbruyelle.rxpermissions2.RxPermissions
+import com.tixon.reminders.service.LocationService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -68,6 +70,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                         )
 
                         googleMap?.isMyLocationEnabled = true
+
+                        startService(
+                            Intent(this, LocationService::class.java)
+                        )
                     }
                 },
                 onError = { t ->
@@ -143,7 +149,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             val distance = distanceArray[0]
 
             toolbar?.title = "d: $distance"
-            Toast.makeText(this@MapActivity, "d: $distance", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this@MapActivity, "d: $distance", Toast.LENGTH_SHORT).show()
         }
     }
 }

@@ -32,6 +32,9 @@
             android:name=".screen_reminders_list.MapActivity"
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
 
+        <service android:name=".service.LocationService"
+            android:enabled="true" />
+
         <!-- https://developers.google.com/maps/documentation/android-sdk/get-api-key -->
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
