@@ -12,18 +12,19 @@ import android.location.LocationManager
 import android.os.IBinder
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import com.tixon.reminders.screen_reminders_list.getPreferences
-import com.tixon.reminders.screen_reminders_list.preference
+import com.tixon.reminders.util.getPreferences
+import com.tixon.reminders.util.Preference
+import com.tixon.reminders.util.createBigTextNotification
 import io.reactivex.disposables.CompositeDisposable
 
 class LocationService : Service() {
 
     companion object {
-        private const val NOTIFICATION_CHANNEL_ID = "com.tixon.reminders.1"
+        private const val NOTIFICATION_ID = 123
     }
 
-    private var lat by preference(this)
-    private var lon by preference(this)
+    private var lat by Preference(this)
+    private var lon by Preference(this)
 
     private val disposables = CompositeDisposable()
 
@@ -34,6 +35,13 @@ class LocationService : Service() {
             ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
             && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
         ) {
+            startForeground(
+                NOTIFICATION_ID,
+                createBigTextNotification(
+                    "Работаю в Foreground",
+                    "Это ForegroundService для location",
+                )
+            )
             Toast.makeText(
                 this,
                 "LocationService started, granted",

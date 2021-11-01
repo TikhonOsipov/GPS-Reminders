@@ -1,10 +1,10 @@
-package com.tixon.reminders.screen_reminders_list
+package com.tixon.reminders.util
 
 import android.content.Context
 import android.util.Log
 import kotlin.reflect.KProperty
 
-class preference(private val context: Context) {
+class Preference(private val context: Context) {
     operator fun getValue(thisRef: Any?, property: KProperty<*>): Double {
         return context.getPreferences().getFloat(property.name, 0f).toDouble().also { value ->
             Log.d("myLogs_pref_delegate", "obtaining value '$value' from preferences by key '${property.name}'")

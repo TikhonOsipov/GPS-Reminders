@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,11 +26,13 @@ import com.tixon.reminders.items.ReminderItemView
 import com.tixon.reminders.screen_reminders_list.adapter.ReminderRow
 import com.tixon.reminders.screen_reminders_list.adapter.RemindersListAdapter
 import com.tixon.reminders.screen_reminders_list.adapter.Row
+import com.tixon.reminders.util.createBigTextNotification
+import com.tixon.reminders.util.getPreferences
+import com.tixon.reminders.util.Preference
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import kotlin.math.sqrt
 
 class MainActivity : AppCompatActivity() {
 
@@ -46,8 +47,8 @@ class MainActivity : AppCompatActivity() {
     private val adapter = RemindersListAdapter<Row>()
     private val disposables = CompositeDisposable()
 
-    private var lat by preference(this)
-    private var lon by preference(this)
+    private var lat by Preference(this)
+    private var lon by Preference(this)
 
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -194,21 +195,5 @@ class MainActivity : AppCompatActivity() {
             bigContentText = "This is text for big secondary notification",
             smallIcon = android.R.drawable.ic_delete
         )
-    }
-
-    private fun createBigTextNotification(
-        title: String,
-        bigContentText: String,
-        priority: Int = NotificationCompat.PRIORITY_DEFAULT,
-        @DrawableRes smallIcon: Int = android.R.drawable.ic_popup_reminder
-    ): Notification {
-        return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-            .setContentTitle(title)
-            .setSmallIcon(smallIcon)
-            .setContentText(bigContentText)
-            .setStyle(NotificationCompat.BigTextStyle()
-                .bigText(bigContentText))
-            .setPriority(priority)
-            .build()
     }
 }

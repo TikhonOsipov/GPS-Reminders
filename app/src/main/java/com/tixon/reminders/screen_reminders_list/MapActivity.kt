@@ -21,6 +21,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.tbruyelle.rxpermissions2.RxPermissions
 import com.tixon.reminders.service.LocationService
+import com.tixon.reminders.util.getPreferences
+import com.tixon.reminders.util.Preference
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -33,8 +35,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private var toolbar: Toolbar? = null
     private val disposables = CompositeDisposable()
 
-    private var lat by preference(this)
-    private var lon by preference(this)
+    private var lat by Preference(this)
+    private var lon by Preference(this)
 
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {

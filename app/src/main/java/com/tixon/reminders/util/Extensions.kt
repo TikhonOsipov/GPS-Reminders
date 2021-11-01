@@ -1,4 +1,4 @@
-package com.tixon.reminders.screen_reminders_list
+package com.tixon.reminders.util
 
 import android.app.Activity
 import android.content.Context
