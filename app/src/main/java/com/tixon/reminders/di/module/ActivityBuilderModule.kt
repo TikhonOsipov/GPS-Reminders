@@ -1,0 +1,14 @@
+package com.tixon.reminders.di.module
+
+import com.tixon.reminders.screen_reminders_list.MainActivity
+import dagger.Module
+import dagger.android.ContributesAndroidInjector
+
+@Module
+abstract class ActivityBuilderModule {
+
+    @ContributesAndroidInjector(
+        modules = [ViewModelModule::class]
+    )
+    abstract fun contributeMainActivity(): MainActivity
+}

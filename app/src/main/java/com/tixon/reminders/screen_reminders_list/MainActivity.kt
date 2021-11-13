@@ -6,17 +6,16 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.content.Intent
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -29,12 +28,14 @@ import com.tixon.reminders.screen_reminders_list.adapter.Row
 import com.tixon.reminders.util.createBigTextNotification
 import com.tixon.reminders.util.getPreferences
 import com.tixon.reminders.util.Preference
+import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
+import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : DaggerAppCompatActivity() {
 
     companion object {
         private const val NOTIFICATION_CHANNEL_ID = "com.tixon.reminders.1"
@@ -42,6 +43,13 @@ class MainActivity : AppCompatActivity() {
         private const val NOTIFICATION_CHANNEL_DESCRIPTION = "Channel description"
         private const val NOTIFICATION_ID_MAIN = 1
         private const val NOTIFICATION_ID_SECONDARY = 2
+    }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    val viewmodel by lazy {
+        ViewModelProvider(this,  viewModelFactory)
+            .get(MainViewModel::class.java)
     }
 
     private val adapter = RemindersListAdapter<Row>()
@@ -59,18 +67,20 @@ class MainActivity : AppCompatActivity() {
         rv.layoutManager = LinearLayoutManager(this)
         rv.adapter = adapter
 
-        adapter.setData(
-            (0..100).map { num ->
+        viewmodel.remindersLiveData.observe(this, { remindersList ->
+            adapter.setData(remindersList.map { reminder ->
                 ReminderRow(
                     id = "reminderRow",
                     hashCode = hashCode(),
                     data = ReminderItemView.Data(
-                        title = "Reminder $num",
-                        checked = false
+                        title = reminder.title,
+                        checked = reminder.isCompleted
                     )
                 )
-            }
-        )
+            })
+        })
+
+        viewmodel.load()
 
         createNotificationChannel()
 
@@ -79,9 +89,10 @@ class MainActivity : AppCompatActivity() {
                 notificationId = NOTIFICATION_ID_MAIN,
                 notification = createMainNotification()
             )*/
-            startActivity(
+
+            /*startActivity(
                 Intent(this, MapActivity::class.java)
-            )
+            )*/
 
         }
 

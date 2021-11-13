@@ -10,15 +10,15 @@ import io.reactivex.Observable
 interface RemindersDao {
 
     @Query("select * from Reminders")
-    fun getRemindersList(): Observable<List<DbReminder>>
+    fun getRemindersList(): Observable<List<ReminderDb>>
 
     @Insert
-    fun insertReminder(reminder: DbReminder)
+    fun insertReminder(reminder: ReminderDb)
 
     @Update
-    fun updateReminder(reminder: DbReminder)
+    fun updateReminder(reminder: ReminderDb)
 
-    @Query("delete from Reminders where reminderId=`reminderId`")
+    @Query("delete from Reminders where reminderId=:reminderId")
     fun removeReminder(reminderId: Int)
 
     @Query("delete from Reminders")

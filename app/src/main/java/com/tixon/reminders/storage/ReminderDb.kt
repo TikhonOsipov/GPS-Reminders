@@ -12,7 +12,7 @@ import androidx.room.PrimaryKey
  * @property isCompleted статус выполнено/не выполнено
  */
 @Entity(tableName = "Reminders")
-class DbReminder(
+class ReminderDb(
     @PrimaryKey(autoGenerate = true)
     val reminderId: Int,
     val listId: Int?,
