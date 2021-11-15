@@ -45,14 +45,14 @@ class MainActivity : DaggerAppCompatActivity() {
         private const val NOTIFICATION_ID_SECONDARY = 2
     }
 
-    @Inject
+    /*@Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     val viewmodel by lazy {
         ViewModelProvider(this,  viewModelFactory)
             .get(MainViewModel::class.java)
-    }
+    }*/
 
-    private val adapter = RemindersListAdapter<Row>()
+//    private val adapter = RemindersListAdapter<Row>()
     private val disposables = CompositeDisposable()
 
     private var lat by Preference(this)
@@ -63,45 +63,26 @@ class MainActivity : DaggerAppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val rv = findViewById<RecyclerView>(R.id.rvReminders)
-        rv.layoutManager = LinearLayoutManager(this)
-        rv.adapter = adapter
-
-        viewmodel.remindersLiveData.observe(this, { remindersList ->
-            adapter.setData(remindersList.map { reminder ->
-                ReminderRow(
-                    id = "reminderRow",
-                    hashCode = hashCode(),
-                    data = ReminderItemView.Data(
-                        title = reminder.title,
-                        checked = reminder.isCompleted
-                    )
-                )
-            })
-        })
-
-        viewmodel.load()
-
         createNotificationChannel()
 
-        findViewById<FloatingActionButton>(R.id.fabReminders).setOnClickListener {
-            /*showNotification(
-                notificationId = NOTIFICATION_ID_MAIN,
-                notification = createMainNotification()
-            )*/
+//        findViewById<FloatingActionButton>(R.id.fabReminders).setOnClickListener {
+//            /*showNotification(
+//                notificationId = NOTIFICATION_ID_MAIN,
+//                notification = createMainNotification()
+//            )*/
+//
+//            /*startActivity(
+//                Intent(this, MapActivity::class.java)
+//            )*/
+//
+//        }
 
-            /*startActivity(
-                Intent(this, MapActivity::class.java)
-            )*/
-
-        }
-
-        adapter.onItemClick = { itemText ->
-            /*showNotification(
-                notificationId = NOTIFICATION_ID_SECONDARY,
-                notification = createSecondaryNotification(title = itemText)
-            )*/
-        }
+//        adapter.onItemClick = { itemText ->
+//            /*showNotification(
+//                notificationId = NOTIFICATION_ID_SECONDARY,
+//                notification = createSecondaryNotification(title = itemText)
+//            )*/
+//        }
 
         val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
 

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/RemindersListFragment">
+
+    <fragment
+        android:id="@+id/RemindersListFragment"
+        android:name="com.tixon.reminders.screen_reminders_list.RemindersListFragment"
+        android:label="Reminders"
+        tools:layout="@layout/fragment_reminders_list">
+
+        <action
+            android:id="@+id/action_RemindersList_to_AddReminder"
+            app:destination="@id/AddReminderFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/AddReminderFragment"
+        android:name="com.tixon.reminders.screen_reminders_list.AddReminderFragment"
+        android:label="Add reminder" />
+</navigation>

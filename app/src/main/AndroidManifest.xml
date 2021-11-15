@@ -20,6 +20,7 @@
         android:theme="@style/Theme.Reminders">
         <activity
             android:name=".screen_reminders_list.MainActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

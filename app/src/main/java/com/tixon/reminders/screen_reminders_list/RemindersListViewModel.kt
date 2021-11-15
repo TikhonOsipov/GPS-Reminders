@@ -12,7 +12,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class MainViewModel
+class RemindersListViewModel
 @Inject constructor(
     private val remindersRepository: RemindersRepository,
 ) : ViewModel() {
@@ -31,7 +31,9 @@ class MainViewModel
                 onNext = { remindersList ->
                     reminders.value = remindersList
                 },
-                onError = {}
+                onError = {
+                    it.printStackTrace()
+                }
             )
             .addTo(disposables)
     }

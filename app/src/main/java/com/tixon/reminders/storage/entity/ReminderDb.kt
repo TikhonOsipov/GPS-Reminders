@@ -1,4 +1,4 @@
-package com.tixon.reminders.storage
+package com.tixon.reminders.storage.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -14,8 +14,8 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "Reminders")
 class ReminderDb(
     @PrimaryKey(autoGenerate = true)
-    val reminderId: Int,
-    val listId: Int?,
+    val reminderId: Int = 0,
+    val listId: Int? = null,
     val title: String,
     val isCompleted: Boolean
 )
