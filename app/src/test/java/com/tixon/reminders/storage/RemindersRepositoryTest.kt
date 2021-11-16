@@ -1,8 +1,7 @@
-package com.tixon.reminders
+package com.tixon.reminders.storage
 
 import com.tixon.reminders.model.PlaceLocation
 import com.tixon.reminders.model.Reminder
-import com.tixon.reminders.storage.RemindersRepository
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -14,6 +13,10 @@ import org.mockito.MockitoAnnotations
 
 @RunWith(JUnit4::class)
 class RemindersRepositoryTest {
+
+    companion object {
+        const val A = "A"
+    }
 
     @Mock
     lateinit var repo: RemindersRepository

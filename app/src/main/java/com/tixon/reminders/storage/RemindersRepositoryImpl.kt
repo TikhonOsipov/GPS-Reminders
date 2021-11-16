@@ -9,6 +9,9 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import javax.inject.Inject
 
+/**
+ * Тест: @see [RemindersRepositoryTest]
+ */
 class RemindersRepositoryImpl
 @Inject constructor(
     private val database: GpsRemindersDatabase,
