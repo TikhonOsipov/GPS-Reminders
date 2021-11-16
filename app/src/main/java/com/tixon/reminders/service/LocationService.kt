@@ -10,8 +10,10 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.IBinder
+import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import com.tixon.reminders.app.App
 import com.tixon.reminders.util.getPreferences
 import com.tixon.reminders.util.Preference
 import com.tixon.reminders.util.createBigTextNotification
@@ -31,6 +33,7 @@ class LocationService : Service() {
     @SuppressLint("MissingPermission")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val repo = App.get(this).appComponent.remindersRepository()
         if (
             ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
             && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED

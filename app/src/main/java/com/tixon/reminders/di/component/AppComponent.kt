@@ -6,6 +6,7 @@ import com.tixon.reminders.di.module.ActivityBuilderModule
 import com.tixon.reminders.di.module.AppModule
 import com.tixon.reminders.di.module.DatabaseModule
 import com.tixon.reminders.di.module.ViewModelFactoryModule
+import com.tixon.reminders.storage.RemindersRepository
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjector
@@ -23,6 +24,8 @@ import javax.inject.Singleton
     ]
 )
 interface AppComponent : AndroidInjector<App> {
+
+    fun remindersRepository(): RemindersRepository
 
     @Component.Factory
     interface Factory {

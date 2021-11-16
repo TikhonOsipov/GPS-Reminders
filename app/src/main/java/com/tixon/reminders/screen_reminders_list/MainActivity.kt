@@ -6,6 +6,7 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -25,6 +26,7 @@ import com.tixon.reminders.items.ReminderItemView
 import com.tixon.reminders.screen_reminders_list.adapter.ReminderRow
 import com.tixon.reminders.screen_reminders_list.adapter.RemindersListAdapter
 import com.tixon.reminders.screen_reminders_list.adapter.Row
+import com.tixon.reminders.service.LocationService
 import com.tixon.reminders.util.createBigTextNotification
 import com.tixon.reminders.util.getPreferences
 import com.tixon.reminders.util.Preference
@@ -113,6 +115,10 @@ class MainActivity : DaggerAppCompatActivity() {
                 }
             )
             .addTo(disposables)
+
+        startService(
+            Intent(this, LocationService::class.java)
+        )
     }
 
     inner class LocalLocationListener : LocationListener {

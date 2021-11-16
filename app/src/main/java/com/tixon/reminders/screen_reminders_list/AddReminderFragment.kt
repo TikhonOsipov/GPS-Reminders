@@ -148,10 +148,6 @@ class AddReminderFragment : DaggerFragment(), OnMapReadyCallback {
                                 )
                             )
                         }
-
-                        /*startService(
-                            Intent(this, LocationService::class.java)
-                        )*/
                     }
                 },
                 onError = { t ->
