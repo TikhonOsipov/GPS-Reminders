@@ -1,6 +1,7 @@
 package com.tixon.reminders.di.module
 
 import com.tixon.reminders.screen_reminders_list.MainActivity
+import com.tixon.reminders.service.LocationService
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -11,4 +12,7 @@ abstract class ActivityBuilderModule {
         modules = [FragmentBuildersModule::class, ViewModelModule::class]
     )
     abstract fun contributeMainActivity(): MainActivity
+
+    @ContributesAndroidInjector
+    abstract fun contributeLocationService(): LocationService
 }

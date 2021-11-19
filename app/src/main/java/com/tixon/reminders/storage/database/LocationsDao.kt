@@ -10,6 +10,9 @@ import io.reactivex.Observable
 @Dao
 interface LocationsDao {
 
+    @Query("select * from Locations")
+    fun getLocations(): Observable<List<LocationDb>>
+
     @Query("select * from Locations where reminderIdRefersTo=:reminderId")
     fun getLocationsForReminder(reminderId: Int): Observable<List<LocationDb>>
 

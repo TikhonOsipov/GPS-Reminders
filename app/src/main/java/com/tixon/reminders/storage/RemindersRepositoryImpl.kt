@@ -38,7 +38,13 @@ class RemindersRepositoryImpl
                         listId = it.reminder.listId,
                         title = it.reminder.title,
                         isCompleted = it.reminder.isCompleted,
-                        locations = it.locations.map { location -> PlaceLocation(location.latitude, location.longitude) }
+                        locations = it.locations.map { location ->
+                            PlaceLocation(
+                                latitude = location.latitude,
+                                longitude = location.longitude,
+                                reminderId = location.reminderIdRefersTo,
+                            )
+                        },
                     )
                 }
             }
@@ -52,6 +58,20 @@ class RemindersRepositoryImpl
             database.locations().insertLocations(locationsWithUpdatedIds)
         }
             .also { pendingLocations.clear() }
+    }
+
+    override fun getLocations(): Observable<List<PlaceLocation>> {
+        return database.locations()
+            .getLocations()
+            .map { list ->
+                list.map {
+                    PlaceLocation(
+                        latitude = it.latitude,
+                        longitude = it.longitude,
+                        reminderId = it.reminderIdRefersTo,
+                    )
+                }
+            }
     }
 
     override fun getPendingLocationsList(): List<PlaceLocation> {

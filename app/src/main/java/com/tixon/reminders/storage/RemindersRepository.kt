@@ -11,6 +11,8 @@ interface RemindersRepository {
 
     fun addReminder(reminder: Reminder): Completable
 
+    fun getLocations(): Observable<List<PlaceLocation>>
+
     fun getPendingLocationsList(): List<PlaceLocation>
 
     fun addPendingLocation(place: PlaceLocation)
