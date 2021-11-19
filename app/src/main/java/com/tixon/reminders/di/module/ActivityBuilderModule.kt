@@ -12,7 +12,4 @@ abstract class ActivityBuilderModule {
         modules = [FragmentBuildersModule::class, ViewModelModule::class]
     )
     abstract fun contributeMainActivity(): MainActivity
-
-    @ContributesAndroidInjector
-    abstract fun contributeLocationService(): LocationService
 }
