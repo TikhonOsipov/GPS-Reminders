@@ -5,6 +5,7 @@ import com.tixon.reminders.model.Reminder
 import com.tixon.reminders.model.prepareForDb
 import com.tixon.reminders.model.prepareToDb
 import com.tixon.reminders.storage.database.GpsRemindersDatabase
+import com.tixon.reminders.storage.entity.ReminderWithLocations
 import io.reactivex.Completable
 import io.reactivex.Observable
 import javax.inject.Inject
@@ -31,23 +32,29 @@ class RemindersRepositoryImpl
     override fun getReminders(): Observable<List<Reminder>> {
         return database.reminders()
             .getRemindersList()
-            .map { list ->
-                list.map {
-                    Reminder(
-                        reminderId = it.reminder.reminderId,
-                        listId = it.reminder.listId,
-                        title = it.reminder.title,
-                        isCompleted = it.reminder.isCompleted,
-                        locations = it.locations.map { location ->
-                            PlaceLocation(
-                                latitude = location.latitude,
-                                longitude = location.longitude,
-                                reminderId = location.reminderIdRefersTo,
-                            )
-                        },
-                    )
-                }
-            }
+            .map { list -> list.map(::mapReminder) }
+    }
+
+    override fun getReminderById(reminderId: Long): Observable<Reminder> {
+        return database.reminders()
+            .getReminderById(reminderId = reminderId)
+            .map(::mapReminder)
+    }
+
+    private fun mapReminder(reminderFromDb: ReminderWithLocations): Reminder = with (reminderFromDb) {
+        Reminder(
+            reminderId = reminder.reminderId,
+            listId = reminder.listId,
+            title = reminder.title,
+            isCompleted = reminder.isCompleted,
+            locations = locations.map { location ->
+                PlaceLocation(
+                    latitude = location.latitude,
+                    longitude = location.longitude,
+                    reminderId = location.reminderIdRefersTo,
+                )
+            },
+        )
     }
 
     override fun addReminder(reminder: Reminder): Completable = Completable.fromCallable {

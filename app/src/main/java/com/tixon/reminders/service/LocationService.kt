@@ -2,6 +2,7 @@ package com.tixon.reminders.service
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Notification
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -10,10 +11,12 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.IBinder
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.tixon.reminders.app.App
+import com.tixon.reminders.model.PlaceLocation
 import com.tixon.reminders.storage.RemindersRepository
-import com.tixon.reminders.util.Preference
 import com.tixon.reminders.util.createBigTextNotification
 import dagger.android.AndroidInjector
 import dagger.android.DaggerService
@@ -24,17 +27,14 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
-import java.lang.StringBuilder
 import javax.inject.Inject
 
 class LocationService : DaggerService(), HasAndroidInjector {
 
     companion object {
+        private const val NOTIFICATION_ID_MAIN = 1
         private const val NOTIFICATION_ID = 123
     }
-
-    private var lat by Preference(this)
-    private var lon by Preference(this)
 
     private val disposables = CompositeDisposable()
 
@@ -94,32 +94,68 @@ class LocationService : DaggerService(), HasAndroidInjector {
 
             remindersRepository.getLocations()
                 .observeOn(AndroidSchedulers.mainThread())
+                .flatMapIterable { it }
+                .map { place ->
+                    place.copy(
+                        distance = calculateDistance(
+                            from = location,
+                            toPlace = place
+                        )
+                    )
+                } //выставляем дистанцию
+                .filter { place ->
+                    place.distance < 1200 //фильтруем по расстоянию (у каждого напоминания может быть своё расстояние)
+                }
+                .filter { it.reminderId != null } //пропускаем непривязанные локации
+                .flatMap { place ->
+                    remindersRepository.getReminderById(
+                        reminderId = place.reminderId ?: 0
+                    ).map { it.copy(distance = place.distance) }
+                } //получаем уведомление по локации
                 .subscribeOn(Schedulers.io())
                 .subscribeBy(
-                    onNext = { locations ->
-                        val remindersToNotify = locations.filter {
-                            val distanceArray = FloatArray(1)
-                            Location.distanceBetween(
-                                location.latitude, location.longitude,
-                                lat, lon,
-                                distanceArray
-                            )
-                            distanceArray[0] < 1200
-                        }
-                            .map { it.reminderId }
-                        if (remindersToNotify.isNotEmpty()) {
-                            val sb = StringBuilder()
-                            remindersToNotify.forEach { sb.append(it).append("; ") }
-                            Toast.makeText(
-                                this@LocationService,
-                                "Reminders: ${sb.toString().trim()}",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                    onNext = { reminder ->
+                        showNotification(
+                            createMainNotification(
+                                title = reminder.title,
+                                distance = reminder.locations.firstOrNull { it.distance > 0 }?.distance ?: 0f //берём первое проставленное расстояние
+                            ),
+                        )
                     },
-                    onError = { it.printStackTrace() },
+                    onError = {
+                        Toast.makeText(this@LocationService, "Error: $it", Toast.LENGTH_SHORT).show()
+                        it.printStackTrace()
+                    },
                 )
                 .addTo(disposables)
         }
+    }
+
+    private fun calculateDistance(from: Location, toPlace: PlaceLocation): Float {
+        val distanceArray = FloatArray(1)
+        Location.distanceBetween(
+            from.latitude, from.longitude,
+            toPlace.latitude, toPlace.longitude,
+            distanceArray
+        )
+        return distanceArray[0]
+    }
+
+    private fun showNotification(
+        notification: Notification,
+        notificationId: Int = NOTIFICATION_ID_MAIN
+    ) {
+        NotificationManagerCompat.from(this).notify(
+            notificationId,
+            notification
+        )
+    }
+
+    private fun createMainNotification(title: String, distance: Float): Notification {
+        return createBigTextNotification(
+            title = title,
+            bigContentText = "Расстояние: $distance м",
+            priority = NotificationCompat.PRIORITY_MAX
+        )
     }
 }

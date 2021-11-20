@@ -13,6 +13,10 @@ interface RemindersDao {
     @Query("select * from Reminders")
     fun getRemindersList(): Observable<List<ReminderWithLocations>>
 
+    @Transaction
+    @Query("select * from Reminders where reminderId=:reminderId")
+    fun getReminderById(reminderId: Long): Observable<ReminderWithLocations>
+
     @Insert
     fun insertReminder(reminder: ReminderDb): Long
 

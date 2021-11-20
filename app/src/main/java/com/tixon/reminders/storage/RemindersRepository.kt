@@ -9,6 +9,8 @@ interface RemindersRepository {
 
     fun getReminders(): Observable<List<Reminder>>
 
+    fun getReminderById(reminderId: Long): Observable<Reminder>
+
     fun addReminder(reminder: Reminder): Completable
 
     fun getLocations(): Observable<List<PlaceLocation>>
