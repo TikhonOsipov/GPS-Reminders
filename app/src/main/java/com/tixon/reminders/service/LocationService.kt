@@ -10,6 +10,7 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.IBinder
+import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -32,6 +33,10 @@ import javax.inject.Inject
 class LocationService : DaggerService(), HasAndroidInjector {
 
     companion object {
+        fun intent(context: Context): Intent {
+            return Intent(context, this::class.java)
+        }
+
         private const val NOTIFICATION_ID_MAIN = 1
         private const val NOTIFICATION_ID = 123
     }
@@ -103,11 +108,38 @@ class LocationService : DaggerService(), HasAndroidInjector {
                         )
                     )
                 } //выставляем дистанцию
+                .doOnNext { place ->
+                    if (place.distance > 1200) {
+                        val ignore = remindersRepository.markLocationAsNotified(place)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribeBy(
+                                onComplete = {},
+                                onError = {
+                                    Toast.makeText(this@LocationService, "Error doing 'markLocationAsNotified' for place with id ${place.id}: $it", Toast.LENGTH_SHORT).show()
+                                }
+                            )
+                    }
+                }
+                .filter { it.workedInsideDistanceArea.not() }
                 .filter { place ->
+                    Toast.makeText(this@LocationService, "Distance in map: ${place.distance}", Toast.LENGTH_SHORT).show()
                     place.distance < 1200 //фильтруем по расстоянию (у каждого напоминания может быть своё расстояние)
                 }
                 .filter { it.reminderId != null } //пропускаем непривязанные локации
+                .doOnNext { place ->
+                    val ignore = remindersRepository.markLocationAsNotified(place)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribeBy(
+                            onComplete = {},
+                            onError = {
+                                Toast.makeText(this@LocationService, "Error doing 'markLocationAsNotified' for place with id ${place.id}: $it", Toast.LENGTH_SHORT).show()
+                            }
+                        )
+                }
                 .flatMap { place ->
+                    Log.d("myLogs", "place: $place")
                     remindersRepository.getReminderById(
                         reminderId = place.reminderId ?: 0
                     ).map { it.copy(distance = place.distance) }
@@ -118,7 +150,7 @@ class LocationService : DaggerService(), HasAndroidInjector {
                         showNotification(
                             createMainNotification(
                                 title = reminder.title,
-                                distance = reminder.locations.firstOrNull { it.distance > 0 }?.distance ?: 0f //берём первое проставленное расстояние
+                                distance = reminder.distance
                             ),
                         )
                     },

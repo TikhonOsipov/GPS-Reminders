@@ -12,14 +12,17 @@ import androidx.room.PrimaryKey
  * @property reminderIdRefersTo идентификатор напоминания, к которому относится местоположение
  * @property latitude ширина
  * @property longitude долгота
+ *
+ * Следующая entity в иерархии: [com.tixon.reminders.model.PlaceLocation]
  */
 @Entity(
     tableName = "Locations",
 )
 data class LocationDb(
     @PrimaryKey(autoGenerate = true)
-    val locationId: Int = 0,
+    val locationId: Long = 0,
     var reminderIdRefersTo: Long = 0,
     val latitude: Double,
     val longitude: Double,
+    val workedInsideDistanceArea: Boolean = false,
 )

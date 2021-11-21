@@ -104,6 +104,8 @@ class MainActivity : DaggerAppCompatActivity() {
                             0f,
                             LocalLocationListener()
                         )
+
+                        startService(LocationService.intent(this))
                     }
                 },
                 onError = { t ->
@@ -115,10 +117,6 @@ class MainActivity : DaggerAppCompatActivity() {
                 }
             )
             .addTo(disposables)
-
-        startService(
-            Intent(this, LocationService::class.java)
-        )
     }
 
     inner class LocalLocationListener : LocationListener {

@@ -14,8 +14,8 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "Reminders")
 class ReminderDb(
     @PrimaryKey(autoGenerate = true)
-    val reminderId: Int = 0,
-    val listId: Int? = null,
+    val reminderId: Long = 0,
+    val listId: Long? = null,
     val title: String,
     val isCompleted: Boolean
 )

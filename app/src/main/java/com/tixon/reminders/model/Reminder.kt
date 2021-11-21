@@ -3,8 +3,8 @@ package com.tixon.reminders.model
 import com.tixon.reminders.storage.entity.ReminderDb
 
 data class Reminder(
-    val reminderId: Int? = null,
-    val listId: Int? = null,
+    val reminderId: Long? = null,
+    val listId: Long? = null,
     val title: String,
     val isCompleted: Boolean,
     val locations: List<PlaceLocation>,

@@ -1,10 +1,12 @@
 package com.tixon.reminders.storage
 
+import android.util.Log
 import com.tixon.reminders.model.PlaceLocation
 import com.tixon.reminders.model.Reminder
 import com.tixon.reminders.model.prepareForDb
 import com.tixon.reminders.model.prepareToDb
 import com.tixon.reminders.storage.database.GpsRemindersDatabase
+import com.tixon.reminders.storage.entity.LocationDb
 import com.tixon.reminders.storage.entity.ReminderWithLocations
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -47,13 +49,7 @@ class RemindersRepositoryImpl
             listId = reminder.listId,
             title = reminder.title,
             isCompleted = reminder.isCompleted,
-            locations = locations.map { location ->
-                PlaceLocation(
-                    latitude = location.latitude,
-                    longitude = location.longitude,
-                    reminderId = location.reminderIdRefersTo,
-                )
-            },
+            locations = locations.map(::mapLocation),
         )
     }
 
@@ -71,14 +67,31 @@ class RemindersRepositoryImpl
         return database.locations()
             .getLocations()
             .map { list ->
-                list.map {
-                    PlaceLocation(
-                        latitude = it.latitude,
-                        longitude = it.longitude,
-                        reminderId = it.reminderIdRefersTo,
-                    )
-                }
+                list.map(::mapLocation)
             }
+    }
+
+    private fun mapLocation(location: LocationDb): PlaceLocation = with(location) {
+        PlaceLocation(
+            id = locationId,
+            latitude = latitude,
+            longitude = longitude,
+            reminderId = reminderIdRefersTo,
+        )
+    }
+
+    override fun markLocationAsNotified(location: PlaceLocation) = Completable.fromCallable {
+        Log.d("myLogs", "markLocationAsNotified: $location")
+        database.locations().updateLocation(
+            location = location.copy(workedInsideDistanceArea = true).prepareForDb()
+        )
+    }
+
+    override fun markLocationNotifyReady(location: PlaceLocation) = Completable.fromCallable {
+        Log.d("myLogs", "markLocationNotifyReady: $location")
+        database.locations().updateLocation(
+            location = location.copy(workedInsideDistanceArea = false).prepareForDb()
+        )
     }
 
     override fun getPendingLocationsList(): List<PlaceLocation> {
